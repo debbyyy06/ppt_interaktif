@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konsep Dasar Campuran</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;800&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1b2a5c;--aqua:#00b4d8;--mint:#2ec4b6;--sun:#ffd23f;--coral:#ff6b6b;--sky:#e8f8ff;--ink:#27325c}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at 30% 20%,#7fdcf2,#1b2a5c);font-family:Nunito,'Segoe UI',Arial,sans-serif;color:var(--ink)}
+#wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;perspective:2000px}
+#stage{width:1280px;height:720px;position:relative;transform-origin:center;flex:none}
+.slide{position:absolute;inset:0;border-radius:32px;background:linear-gradient(160deg,#fff,var(--sky));padding:56px 72px 90px;box-shadow:0 40px 80px rgba(0,0,0,.35),0 0 0 10px rgba(255,255,255,.35);opacity:0;visibility:hidden;transform:rotateY(-70deg) translateZ(-300px);transform-origin:left center;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .6s;overflow:hidden;transform-style:preserve-3d}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.slide.past{opacity:0;transform:rotateY(70deg) translateZ(-300px);transform-origin:right center}
+h1,h2,h3{font-family:'Baloo 2','Arial Rounded MT Bold',Arial,sans-serif;font-weight:800;color:var(--navy);line-height:1.1}
+h1{font-size:76px}h2{font-size:48px;margin-bottom:22px}h3{font-size:30px}
+p,li{font-size:25px;line-height:1.45;font-weight:500}
+.chip{display:inline-block;background:var(--sun);color:var(--navy);font-family:'Baloo 2',Arial;font-weight:800;font-size:22px;padding:6px 20px;border-radius:30px;margin-bottom:12px;box-shadow:0 5px 0 #d9a900}
+.row{display:flex;gap:28px;align-items:center;height:calc(100% - 90px)}
+.col{flex:1}
+.card{background:#fff;border-radius:24px;padding:22px 26px;box-shadow:0 10px 0 rgba(27,42,92,.12),0 18px 30px rgba(0,100,140,.18);transition:transform .35s,box-shadow .35s;transform-style:preserve-3d}
+.card:hover{transform:translateY(-10px) rotateX(6deg) rotateY(-4deg) scale(1.03)}
+.grid{display:grid;gap:22px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.ico{font-size:52px;display:block;margin-bottom:6px;animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px) rotate(6deg)}}
+.pop{animation:pop .8s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{transform:translateZ(0) translateY(60px) scale(.6) rotateX(50deg);opacity:0}}
+.active .card{animation:pop .8s cubic-bezier(.2,1.4,.4,1) both}
+.active .card:nth-child(2){animation-delay:.15s}.active .card:nth-child(3){animation-delay:.3s}.active .card:nth-child(4){animation-delay:.45s}
+/* beaker */
+.beaker{position:relative;width:170px;height:210px;border:7px solid rgba(27,42,92,.55);border-top:none;border-radius:0 0 40px 40px;background:rgba(255,255,255,.55);overflow:hidden;box-shadow:inset -14px 0 0 rgba(255,255,255,.55),0 25px 25px rgba(0,0,0,.18);margin:auto;animation:bob 4s ease-in-out infinite}
+.beaker .liq{position:absolute;left:0;right:0;bottom:0;height:72%;background:linear-gradient(#5fd4f1,#00a6d0);transition:background 1s}
+.beaker .liq:before{content:"";position:absolute;top:-10px;left:-20%;width:140%;height:20px;border-radius:50%;background:rgba(255,255,255,.55);animation:wave 3s linear infinite}
+@keyframes wave{50%{transform:translateX(10%)}}
+.dot{position:absolute;border-radius:50%;background:var(--c,#fff)}
+.b{position:absolute;bottom:0;border-radius:50%;background:rgba(255,255,255,.7);animation:rise 4s infinite}
+@keyframes rise{to{transform:translateY(-150px);opacity:0}}
+.lbl{text-align:center;font-family:'Baloo 2',Arial;font-weight:800;font-size:24px;margin-top:14px}
+/* table */
+table{width:100%;border-collapse:separate;border-spacing:0 8px;font-size:22px}
+th{background:var(--navy);color:#fff;padding:10px 16px;font-family:'Baloo 2',Arial}
+th:first-child{border-radius:16px 0 0 16px}th:last-child{border-radius:0 16px 16px 0}
+td{background:#fff;padding:10px 16px;box-shadow:0 4px 10px rgba(0,100,140,.12)}td:first-child{font-weight:700;color:var(--aqua);border-radius:16px 0 0 16px}td:last-child{border-radius:0 16px 16px 0}
+/* flip */
+.flip{perspective:900px;height:330px;cursor:pointer}
+.flip i{display:block;position:relative;width:100%;height:100%;transition:transform .8s;transform-style:preserve-3d;font-style:normal}
+.flip.on i{transform:rotateY(180deg)}
+.flip .f,.flip .k{position:absolute;inset:0;border-radius:26px;padding:26px;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:center;text-align:center;color:#fff;box-shadow:0 14px 0 rgba(0,0,0,.15)}
+.flip .k{transform:rotateY(180deg)}
+/* buttons */
+button{font-family:'Baloo 2',Arial;font-weight:800;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s}
+#nav{position:absolute;bottom:22px;left:72px;right:72px;display:flex;align-items:center;gap:20px;z-index:50}
+.btn{background:var(--coral);color:#fff;font-size:26px;padding:10px 38px;border-radius:40px;box-shadow:0 8px 0 #c94444}
+.btn:hover{transform:translateY(-4px) scale(1.07);box-shadow:0 12px 0 #c94444}
+.btn:active{transform:translateY(5px);box-shadow:0 2px 0 #c94444}
+.btn.alt{background:var(--aqua);box-shadow:0 8px 0 #0089a8}.btn.alt:hover{box-shadow:0 12px 0 #0089a8}
+.btn:disabled{opacity:.35;pointer-events:none}
+#prog{flex:1;height:30px;border-radius:20px;background:#fff;border:4px solid var(--navy);position:relative;overflow:hidden}
+#fill{height:100%;width:8%;background:linear-gradient(90deg,var(--mint),var(--aqua));transition:width .8s;position:relative}
+#fill:after{content:"🧪";position:absolute;right:-4px;top:-5px;font-size:24px}
+#cnt{font-family:'Baloo 2',Arial;font-weight:800;font-size:22px;color:var(--navy);min-width:70px;text-align:right}
+.mix{background:#fff;border:4px solid var(--aqua);color:var(--navy);font-size:22px;padding:8px 20px;border-radius:30px;margin:5px;box-shadow:0 6px 0 #aee9f7}
+.mix:hover{transform:translateY(-4px) rotate(-3deg);background:var(--sun)}
+.float{position:absolute;font-size:60px;animation:bob 4s ease-in-out infinite;opacity:.9}
+ul{list-style:none}li{margin:10px 0;padding-left:46px;position:relative}li:before{content:"✔";position:absolute;left:0;width:34px;height:34px;border-radius:50%;background:var(--mint);color:#fff;font-size:19px;text-align:center;line-height:34px}
+.cover{background:linear-gradient(150deg,#00b4d8,#2ec4b6 55%,#ffd23f);color:#fff}
+.cover h1{color:#fff;text-shadow:0 6px 0 rgba(27,42,92,.35)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
+
+/* ===== LAB THEME ===== */
+#wrap:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.08) 0 2px,transparent 2px 90px),repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 2px,transparent 2px 90px),linear-gradient(#1d8fa3,#0d3b4a)}
+#shelf{position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(#b9824a,#7a4e24);box-shadow:0 -6px 0 #d9a066;font-size:34px;letter-spacing:70px;white-space:nowrap;overflow:visible;line-height:0}
+.bub{position:absolute;bottom:-30px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);animation:up linear infinite}
+@keyframes up{to{transform:translateY(-110vh) translateX(40px)}}
+.slide:not(.cover){background:linear-gradient(rgba(0,160,200,.09) 1px,transparent 1px) 0 0/32px 32px,linear-gradient(90deg,rgba(0,160,200,.09) 1px,transparent 1px) 0 0/32px 32px,#fffef7}
+.cover{background:repeating-linear-gradient(0deg,rgba(255,255,255,.08) 0 2px,transparent 2px 80px),repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 2px,transparent 2px 80px),linear-gradient(150deg,#0e8fa8,#13b5a0 60%,#f0c93a)}
+.float{pointer-events:none}
+#mas{position:absolute;top:10px;right:26px;z-index:40;display:flex;align-items:center;gap:8px;cursor:pointer}
+#mas span{font-size:58px;animation:bob 2.5s ease-in-out infinite}
+#say{background:#fff;border:3px solid var(--aqua);border-radius:20px;padding:8px 16px;font-weight:700;font-size:18px;max-width:380px;color:var(--navy);box-shadow:0 5px 0 #aee9f7}
+#sc{font-family:'Baloo 2',Arial;font-weight:800;font-size:22px;background:var(--sun);color:var(--navy);padding:4px 16px;border-radius:30px;box-shadow:0 4px 0 #d9a900}
+.hop{animation:hop .5s}@keyframes hop{50%{transform:scale(1.5) rotate(-8deg)}}
+.cf{position:fixed;z-index:999;font-size:28px;pointer-events:none;animation:cf 1.1s ease-out forwards}
+@keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(360deg);opacity:0}}
+.drop{position:absolute;left:50%;top:-30px;font-size:46px;opacity:0;z-index:5}
+@keyframes fall{from{transform:translate(-50%,-70px);opacity:1}to{transform:translate(-50%,130px) scale(.6);opacity:0}}
+@keyframes shk{20%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}80%{transform:rotate(-5deg)}}
+.p{position:absolute;border-radius:50%}
+.flip:hover{transform:translateY(-6px) scale(1.04);transition:transform .3s}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage"></div></div>
+<script>
+const S=[];
+const bk=(c='',l='72%',col='')=>`<div class="beaker"><div class="liq" style="height:${l};${col}"></div>${c}<span class="b" style="left:30px;width:12px;height:12px"></span><span class="b" style="left:90px;width:9px;height:9px;animation-delay:1.2s"></span></div>`;
+// 1 Cover
+S.push(`<section class="slide cover"><span class="float" style="left:60px;top:70px">⚗️</span><span class="float" style="right:90px;top:60px;animation-delay:1s">🧪</span><span class="float" style="right:150px;bottom:130px;animation-delay:2s">🔬</span>
+<div class="row"><div class="col"><span class="chip">IPA • SMP Fase D</span><h1>Konsep Dasar<br>Campuran</h1><p style="margin-top:20px;color:#fff;font-size:30px;font-weight:700">Yuk, jadi ilmuwan cilik dan kenali dunia campuran!</p></div>
+<div class="col">${bk('<span class="dot" style="--c:#fff;width:40px;height:40px;left:30px;bottom:20px"></span><span class="dot" style="--c:#ffd23f;width:30px;height:30px;left:90px;bottom:60px"></span>')}<div class="lbl" style="color:#fff">Tekan “Lanjut” untuk mulai ▶</div></div></div></section>`);
+// 2 CP
+S.push(`<section class="slide"><span class="chip">🎯 Capaian Pembelajaran</span><h2>Apa yang kamu capai?</h2><div class="grid g2"><div class="card"><span class="ico">🔍</span><h3>Menganalisis materi</h3><p>Kamu mampu menganalisis klasifikasi, sifat, dan perubahan materi.</p></div><div class="card"><span class="ico">📝</span><h3>Keterampilan proses</h3><p>Kamu mengamati, mencatat data, dan menarik kesimpulan berdasarkan bukti.</p></div><div class="card"><span class="ico">📊</span><h3>Mengolah data</h3><p>Kamu menyajikan hasil pengamatan dalam tabel dan menjelaskan polanya.</p></div><div class="card"><span class="ico">🗣️</span><h3>Mengomunikasikan</h3><p>Kamu menjelaskan hasil penyelidikan dengan runtut dan jelas.</p></div></div></section>`);
+// 3 Tujuan
+S.push(`<section class="slide"><span class="chip">🚩 Tujuan Pembelajaran</span><h2>Setelah belajar, kamu bisa:</h2><ul><li>Menjelaskan pengertian, komponen, dan ciri campuran.</li><li>Membedakan zat tunggal dan campuran.</li><li>Mengelompokkan campuran homogen dan heterogen beserta contohnya.</li><li>Menghubungkan ciri campuran dengan cara memisahkannya.</li></ul></section>`);
+// 4 Pengertian
+S.push(`<section class="slide"><span class="chip">📖 Materi 1</span><h2>Zat Tunggal atau Campuran?</h2><div class="row" style="height:auto;align-items:flex-start"><div class="col"><div class="card" style="background:#fff7d6;margin-bottom:18px"><h3>💧 Zat Tunggal</h3><p style="font-size:22px">Hanya <b>satu jenis zat</b>, sifatnya tetap. Contoh: air murni, oksigen, besi, garam murni.</p></div><div class="card" style="background:#e1fbf7"><h3>🥤 Campuran</h3><p style="font-size:22px"><b>Dua zat atau lebih</b> bercampur secara fisik, tanpa zat baru. Contoh: air gula, air garam, air + minyak.</p></div></div><div style="width:310px;text-align:center"><div style="position:relative;width:170px;margin:0 auto"><div class="drop" id="d4"></div><div class="beaker" style="animation:none"><div class="liq" id="l4" style="height:18%"></div></div></div><div class="lbl" id="t4">Ayo tuang bahan ke gelas!</div><div><button class="mix" onclick="add4('💧')">💧 Air</button><button class="mix" onclick="add4('🍬')">🍬 Gula</button><button class="mix" onclick="add4('🧂')">🧂 Garam</button></div></div></div></section>`);
+// 5 Perbedaan
+S.push(`<section class="slide"><span class="chip">⚖️ Materi 2</span><h2>Beda Zat Tunggal dan Campuran</h2><table><tr><th>Aspek</th><th>Zat Tunggal</th><th>Campuran</th></tr><tr><td>Penyusun</td><td>Satu jenis</td><td>Dua zat atau lebih</td></tr><tr><td>Komposisi</td><td>Tetap</td><td>Dapat berubah</td></tr><tr><td>Sifat penyusun</td><td>Memiliki sifat tertentu</td><td>Masih seperti sifat asalnya</td></tr><tr><td>Pemisahan</td><td>Perlu proses tertentu</td><td>Bisa secara fisika</td></tr><tr><td>Contoh</td><td>Air murni, besi</td><td>Air gula, air pasir</td></tr></table></section>`);
+// 6 Ciri
+const CI=['Tersusun atas dua zat atau lebih','Zat penyusun tidak berubah jadi zat baru','Komposisi tiap komponen bisa berbeda','Sifat zat penyusun masih dikenali','Bisa dipisahkan dengan cara fisika','Sifatnya bergantung pada penyusunnya'],IC=['➕','🔒','📏','👁️','✂️','🔗'];
+S.push(`<section class="slide"><span class="chip">🔎 Materi 3</span><h2>6 Ciri Campuran: Buka Kartunya!</h2><div class="grid g3" style="gap:18px">${CI.map((t,k)=>`<div class="flip" style="height:200px" onclick="flipC(this)"><i><div class="f" style="background:hsl(${190+k*28},70%,45%)"><span class="ico" style="margin:0">${IC[k]}</span><h3 style="color:#fff">Ciri ${k+1}</h3><p style="color:#fff;font-size:20px">Ketuk aku!</p></div><div class="k" style="background:hsl(${190+k*28},70%,35%)"><p style="color:#fff;font-size:22px;line-height:1.3">${t}</p></div></i></div>`).join('')}</div></section>`);
+// 7 Jenis
+S.push(`<section class="slide"><span class="chip">🧩 Materi 4</span><h2>Jenis Campuran <small style="font-size:22px;font-weight:600">(ketuk kartu untuk membalik)</small></h2><div class="grid g2"><div class="flip" onclick="this.classList.toggle('on')"><i><div class="f" style="background:linear-gradient(160deg,#2ec4b6,#00a6d0)"><span class="ico">🥛</span><h3 style="color:#fff">Campuran Homogen</h3><p style="color:#fff">Ketuk untuk lihat →</p></div><div class="k" style="background:#00a6d0"><p style="color:#fff">Komposisi <b>seragam</b>, komponen tidak bisa dibedakan langsung.</p><p style="color:#fff"><b>Contoh:</b> air garam, air gula</p></div></i></div>
+<div class="flip" onclick="this.classList.toggle('on')"><i><div class="f" style="background:linear-gradient(160deg,#ff6b6b,#ff9f43)"><span class="ico">🌊</span><h3 style="color:#fff">Campuran Heterogen</h3><p style="color:#fff">Ketuk untuk lihat →</p></div><div class="k" style="background:#ff6b6b"><p style="color:#fff">Komposisi <b>tidak seragam</b>, komponen masih bisa dibedakan.</p><p style="color:#fff"><b>Contoh:</b> air pasir, air minyak</p></div></i></div></div></section>`);
+// 8 Bentuk
+const BI=[['Larutan','Air gula','linear-gradient(#bfeefa,#6fd0ea)','Homogen, partikel sangat kecil.'],['Koloid','Susu','linear-gradient(#fff,#ece7dc)','Partikel lebih besar, tidak mudah mengendap.'],['Suspensi','Air lumpur','linear-gradient(#cfeaf3,#9fcfe0)','Heterogen, partikel besar, mengendap.']];
+S.push(`<section class="slide"><span class="chip">🧪 Materi 5</span><h2>Bentuk Campuran: Kocok &amp; Diamkan!</h2><div class="grid g3" style="gap:16px">${BI.map((b,k)=>`<div class="card" style="text-align:center;padding:12px"><div class="beaker" id="bz${k}" style="width:130px;height:150px;animation:none"><div class="liq" style="height:80%;background:${b[2]}"></div></div><h3>${b[0]}</h3><p style="font-size:19px;line-height:1.3">${b[1]}: ${b[3]}</p></div>`).join('')}</div><div style="text-align:center;margin-top:8px"><button class="btn" onclick="shake8()">🌀 Kocok!</button> <button class="btn alt" onclick="rest8()">⏳ Diamkan</button><p id="m8" style="font-size:21px;margin-top:8px"></p></div></section>`);
+// 9 Contoh
+S.push(`<section class="slide"><span class="chip">🌏 Materi 6</span><h2>Campuran di Sekitar Kita</h2><div class="grid g2"><div class="card"><span class="ico">🌬️</span><h3>Udara</h3><p style="font-size:22px">Campuran gas (nitrogen, oksigen, karbon dioksida). <b>Homogen.</b></p></div><div class="card"><span class="ico">🌊</span><h3>Air laut</h3><p style="font-size:22px">Air + garam + mineral lain. <b>Homogen.</b></p></div><div class="card"><span class="ico">🌱</span><h3>Tanah</h3><p style="font-size:22px">Pasir, humus, air, mineral. <b>Heterogen.</b></p></div><div class="card"><span class="ico">🥛</span><h3>Susu</h3><p style="font-size:22px">Partikelnya tersebar merata, tidak mengendap. <b>Koloid.</b></p></div></div></section>`);
+// 10 Percobaan
+S.push(`<section class="slide"><span class="chip">🧑‍🔬 Lab Percobaan</span><h2>Campur ke Air, Lalu Amati!</h2><div class="row" style="height:auto"><div class="col"><p>Pilih bahan, lalu lihat apa yang terjadi:</p><div id="mixbtns"></div><div id="res" class="card" style="margin-top:14px;min-height:120px"><p>Ayo coba satu bahan dulu! 👆</p></div></div><div style="width:260px;position:relative"><div class="drop" id="d10"></div><div class="beaker" id="bk" style="animation:none"><div class="liq" id="liq"></div><div id="layers"></div></div><div class="lbl" id="bkl">Air bersih</div></div></div></section>`);
+// 11 Game
+const GB='<button class="btn" style="background:var(--mint);box-shadow:0 8px 0 #1e9488;margin:10px" onclick="ans(1)">🥛 Homogen</button><br><button class="btn" onclick="ans(0)">🌊 Heterogen</button>';
+S.push(`<section class="slide"><span class="chip">🎮 Game Seru</span><h2>Sortir Cepat!</h2><div class="row" style="height:auto"><div class="col" style="text-align:center"><div id="gcard" class="card" style="font-size:46px;font-family:'Baloo 2',Arial;font-weight:800;padding:44px 20px;color:var(--navy)"></div><div id="gfb" style="font-size:23px;margin-top:14px;min-height:64px;font-weight:700"></div></div><div style="width:330px;text-align:center"><div id="gb">${GB}</div><p id="gsc" style="font-weight:800">Benar: 0</p></div></div></section>`);
+// 12 Penutup
+S.push(`<section class="slide cover"><span class="float" style="left:80px;top:120px">🎉</span><span class="float" style="right:100px;bottom:140px;animation-delay:1s">⭐</span><div style="text-align:center;padding-top:80px"><h1>Hebat!<br>Misi Lab Selesai</h1><p id="fin" style="color:#fff;font-size:34px;font-weight:800;margin:18px 0 6px"></p><p style="color:#fff;font-size:24px;font-weight:700;margin:0 0 26px">Ingat: campuran = 2 zat atau lebih • homogen / heterogen • larutan, koloid, suspensi</p><button class="btn" style="background:var(--sun);color:var(--navy);box-shadow:0 8px 0 #d9a900" onclick="stars=0;sc.textContent='⭐ 0';tried.clear();go(0)">↺ Mulai lagi</button></div></section>`);
+
+const st=document.getElementById('stage');st.innerHTML=S.join('')+`<div id="nav"><button class="btn alt" id="prev" onclick="go(i-1)">◀</button><div id="prog"><div id="fill"></div></div><span id="cnt"></span><button class="btn" id="next" onclick="go(i+1)">Lanjut ▶</button></div>`;
+const sl=[...st.querySelectorAll('.slide')];let i=0;
+function go(n){if(n<0||n>=sl.length)return;i=n;sl.forEach((s,k)=>{s.className=s.className.replace(/ ?(active|past)/g,'')+(k==i?' active':k<i?' past':'')});
+document.getElementById('fill').style.width=((i+1)/sl.length*100)+'%';document.getElementById('cnt').textContent=(i+1)+' / '+sl.length;
+document.getElementById('prev').disabled=i==0;document.getElementById('next').style.visibility=i==sl.length-1?'hidden':'visible';
+document.getElementById('nav').style.display='flex';onSlide()}
+function fit(){const k=Math.min(innerWidth/1300,innerHeight/740);st.style.transform=`scale(${k})`}
+addEventListener('resize',fit);fit();
+addEventListener('keydown',e=>{if(e.key=='ArrowRight'||e.key==' ')go(i+1);if(e.key=='ArrowLeft')go(i-1)});
+// 3D tilt
+document.getElementById('wrap').addEventListener('mousemove',e=>{const x=(e.clientX/innerWidth-.5)*6,y=(e.clientY/innerHeight-.5)*-4;st.style.transform=`scale(${Math.min(innerWidth/1300,innerHeight/740)}) rotateY(${x}deg) rotateX(${y}deg)`});
+// ===== Interaktif =====
+let stars=0,sh=0,done8=0;const tried=new Set();
+const sc=document.createElement('span');sc.id='sc';sc.textContent='⭐ 0';document.getElementById('nav').insertBefore(sc,document.getElementById('cnt'));
+function boom(el){const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};for(let n=0;n<16;n++){const s=document.createElement('span');s.className='cf';s.textContent=['⭐','✨','🎈','🫧','💥'][n%5];s.style.left=(r.left+r.width/2)+'px';s.style.top=(r.top+r.height/2)+'px';s.style.setProperty('--x',(Math.random()*400-200)+'px');s.style.setProperty('--y',(Math.random()*-300-40)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1200)}}
+function star(n,el){stars+=n;sc.textContent='⭐ '+stars;sc.classList.remove('hop');void sc.offsetWidth;sc.classList.add('hop');boom(el)}
+const T=['Halo! Aku Dr. Bubbi. Yuk bereksperimen bareng!','Ini target belajarmu hari ini!','Tiga hal ini yang akan kamu kuasai!','Tuang bahan ke gelas dan lihat hasilnya!','Bandingkan dua kolom ini ya!','Ketuk kartu untuk membuka ciri. Ada bintang!','Ketuk kartu untuk membaliknya!','Kocok dulu, lalu diamkan. Siapa yang mengendap?','Coba cari campuran ini di rumahmu!','Tuang bahan, amati, lalu simpulkan!','Ayo main! Jawab benar dapat bintang!','Kamu keren! Sampai jumpa di percobaan berikutnya!'];
+const mas=document.createElement('div');mas.id='mas';mas.innerHTML='<div id="say"></div><span>🧑‍🔬</span>';st.appendChild(mas);mas.onclick=()=>say(T[i]);
+function say(t){const s=document.getElementById('say');s.textContent=t;s.style.animation='none';void s.offsetWidth;s.style.animation='pop .6s both'}
+function drop(id,e,cb){const d=document.getElementById(id);d.textContent=e;d.style.animation='none';void d.offsetWidth;d.style.animation='fall .8s ease-in forwards';setTimeout(()=>{const b=d.parentElement.querySelector('.beaker');b.style.animation='none';void b.offsetWidth;b.style.animation='shk .6s';cb&&cb()},780)}
+// dekorasi lab + gelembung
+const wr=document.getElementById('wrap');const shelf=document.createElement('div');shelf.id='shelf';shelf.textContent='⚗️🧪🔬🧫🧬⚗️🧪🔬🧫🧬';wr.insertBefore(shelf,st);
+for(let n=0;n<16;n++){const b=document.createElement('span');b.className='bub';const z=10+Math.random()*30;b.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${6+Math.random()*8}s;animation-delay:${-Math.random()*10}s`;wr.insertBefore(b,st)}
+sl.forEach(s=>{if(!s.classList.contains('cover'))s.insertAdjacentHTML('beforeend','<span class="float" style="right:30px;bottom:96px;font-size:46px;opacity:.3">⚗️</span><span class="float" style="left:20px;bottom:96px;font-size:40px;opacity:.25;animation-delay:1.5s">🧫</span>')});
+function onSlide(){say(T[i]);if(i==7)initB();if(i==11){document.getElementById('fin').textContent='⭐ Kamu mengumpulkan '+stars+' bintang!';setTimeout(()=>boom(null),500)}}
+// Slide 4
+const A4=new Set();
+function add4(e){drop('d4',e,()=>{A4.add(e);const n=A4.size;document.getElementById('l4').style.height=Math.min(78,18+n*20)+'%';document.getElementById('l4').style.background=n>=2?'linear-gradient(#c9f1fb,#7fd6ee)':'';document.getElementById('t4').textContent=n<2?'Baru 1 jenis zat: zat tunggal ☝️':'2 zat atau lebih = CAMPURAN! 🎉';if(n==2)star(1,document.getElementById('t4'))})}
+// Slide 6
+function flipC(el){if(!el.classList.contains('on')){el.classList.add('on');star(1,el)}}
+// Slide 8
+const BS=[4,9,14],BC=['#ffffff','#fff8e6','#7a5a30'];
+function initB(){sh=0;done8=0;for(let k=0;k<3;k++){const b=document.getElementById('bz'+k);b.querySelectorAll('.p').forEach(e=>e.remove());for(let n=0;n<16;n++){const d=document.createElement('span');d.className='p';d.style.cssText=`width:${BS[k]}px;height:${BS[k]}px;background:${BC[k]};left:${8+Math.random()*100}px;top:${45+Math.random()*80}px;transition:all .45s`;b.appendChild(d)}}document.getElementById('m8').textContent='Tekan Kocok dulu, lalu Diamkan!'}
+function shake8(){sh=1;for(let k=0;k<3;k++){const b=document.getElementById('bz'+k);b.style.animation='none';void b.offsetWidth;b.style.animation='shk .6s';b.querySelectorAll('.p').forEach(d=>{d.style.transition='all .45s';d.style.left=(8+Math.random()*100)+'px';d.style.top=(45+Math.random()*80)+'px'})}document.getElementById('m8').textContent='Dikocok! Semua partikel tersebar. Sekarang tekan Diamkan.'}
+function rest8(){if(!sh){document.getElementById('m8').textContent='Kocok dulu ya! 🌀';return}document.getElementById('m8').textContent='Menunggu... ⏳';document.getElementById('bz2').querySelectorAll('.p').forEach(d=>{d.style.transition='top 2.4s ease-in';d.style.top=(116+Math.random()*12)+'px'});setTimeout(()=>{document.getElementById('m8').textContent='Suspensi mengendap! Larutan dan koloid tetap merata.';if(!done8){done8=1;star(2,document.getElementById('bz2'))}},2500)}
+// Slide 10
+const M={gula:['🍬 Gula','Larutan (homogen). Gula larut, air tampak seragam.','tint','linear-gradient(#bfeefa,#6fd0ea)','Air gula'],garam:['🧂 Garam','Larutan (homogen). Garam larut dan tidak terlihat lagi.','tint','linear-gradient(#c9f1fb,#7fd6ee)','Air garam'],susu:['🥛 Susu','Koloid. Tampak seragam dan tidak mengendap.','tint','linear-gradient(#fff,#ece7dc)','Air susu'],pasir:['🏖️ Pasir','Suspensi (heterogen). Pasir mengendap di dasar.','sand','','Air pasir'],minyak:['🫒 Minyak','Heterogen. Minyak terpisah dan mengapung di atas air.','oil','','Air + minyak']};
+const mb=document.getElementById('mixbtns');
+for(const k in M){const b=document.createElement('button');b.className='mix';b.textContent=M[k][0];b.onclick=()=>mixIt(k,b);mb.appendChild(b)}
+const rb=document.createElement('button');rb.className='mix';rb.textContent='🔄 Ulang';rb.onclick=()=>{document.getElementById('layers').innerHTML='';document.getElementById('liq').style.background='';document.getElementById('bkl').textContent='Air bersih';document.getElementById('res').innerHTML='<p>Gelas sudah bersih. Coba bahan lain! 👆</p>'};mb.appendChild(rb);
+function mixIt(k,btn){const m=M[k];drop('d10',m[0].split(' ')[0],()=>{const l=document.getElementById('liq'),ly=document.getElementById('layers');ly.innerHTML='';
+l.style.background=m[2]=='tint'?m[3]:'';
+if(m[2]=='sand')ly.innerHTML='<div class="dot" style="--c:#c9a35e;left:0;right:0;bottom:0;height:34px;border-radius:0;animation:pop .8s"></div>';
+if(m[2]=='oil')ly.innerHTML='<div class="dot" style="--c:#ffd23f;left:0;right:0;top:48px;height:30px;border-radius:0;animation:pop .8s"></div>';
+document.getElementById('bkl').textContent=m[4];document.getElementById('res').innerHTML='<h3>'+m[0]+'</h3><p style="font-size:22px">'+m[1]+'</p>';
+if(!tried.has(k)){tried.add(k);star(1,btn)}})}
+// Slide 11 Game
+const G=[['🧂 Air garam',1],['🏖️ Air pasir',0],['🌬️ Udara',1],['🌱 Tanah',0],['🍬 Air gula',1],['🫒 Air + minyak',0],['🌊 Air laut',1],['🟤 Air lumpur',0]];let gi=0,gs=0;
+function showG(){const c=document.getElementById('gcard');document.getElementById('gsc').textContent='Benar: '+gs+' / '+G.length;if(gi>=G.length){c.innerHTML='🏆 Selesai!';document.getElementById('gfb').textContent=gs>=6?'Keren banget, kamu ahli campuran!':'Bagus! Baca materinya lagi, lalu main lagi ya 😉';document.getElementById('gb').innerHTML='<button class="btn alt" onclick="gi=0;gs=0;document.getElementById(\'gb\').innerHTML=GB;document.getElementById(\'gfb\').textContent=\'\';showG()">🔁 Main lagi</button>';return}c.textContent=G[gi][0]}
+function ans(v){if(gi>=G.length)return;const c=document.getElementById('gcard'),f=document.getElementById('gfb');if(v==G[gi][1]){gs++;star(1,c);f.textContent='✅ Benar! '+(v?'Seragam, tidak bisa dibedakan.':'Komponennya masih bisa dibedakan.');gi++;setTimeout(showG,800);document.getElementById('gsc').textContent='Benar: '+gs+' / '+G.length}else{c.style.animation='none';void c.offsetWidth;c.style.animation='shk .5s';f.textContent='❌ Hampir! '+(v?'Ingat: homogen = seragam.':'Ingat: heterogen = komponen masih terlihat.')}}
+showG();
+go(0);
+</script>
+</body>
+</html>
